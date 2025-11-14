@@ -23,7 +23,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
-URL = 'https://raw.githubusercontent.com/Kabir26-star/CAS-ADS-Projects-Kabirdev-Singh-Ramana/main/CAS-ADS-Module%202/divorce_df.csv'
+URL = 'https://github.com/Kabir26-star/CAS-ADS-Module-3/blob/main/divorce_df.csv?raw=true' 
 df = pd.read_csv(URL)
 df
 
