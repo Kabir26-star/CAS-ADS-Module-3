@@ -301,6 +301,16 @@ for col in categorical_cols:
     plt.tight_layout()
     plt.show()
 
+
+"""Age Distribution"""
+#Age at Marriage distribution
+sns.histplot(x='age_at_marriage', data=df_copy, kde=True, stat='density', bins=30)
+plt.title('Distribution of Age at Marriage')
+plt.xlabel('Age at Marriage')
+plt.ylabel('Density')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
 """**Machine Learning**
 **Linear Regression**
 **Marriage Duration Years**
