@@ -13,6 +13,7 @@ from scipy import stats
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from xgboost import XGBClassifier, XGBRegressor
 from sklearn.svm import SVR
@@ -558,7 +559,7 @@ if categorical_cols:
 
 
 
-model = LogisticRegression(max_iter = 1000)
+model = RandomForestClassifier(n_estimators=100, random_state= 42)
 model.fit(X_train, Y_train)
 
 y_pred = model.predict(x_test)
