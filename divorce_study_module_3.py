@@ -710,7 +710,7 @@ disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=display_labels
 
 fig, ax = plt.subplots(figsize=(10, 6))
 disp.plot(ax=ax, cmap='Blues', values_format='d')
-plt.title("Confusion Matrix - Logistic Regression (Infidelity Occurance)")
+plt.title("Confusion Matrix - Logistic Regression (Counseling Attended)")
 plt.show()
 
 #Evaluate performance
