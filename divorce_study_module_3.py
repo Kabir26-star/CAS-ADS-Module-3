@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Converted from Jupyter Notebook: notebook.ipynb
-Conversion Date: 2025-11-20T12:09:10.105Z
+Conversion Date: 2025-11-22T22:28:57.310Z
 """
 
 import pandas as pd
@@ -11,13 +11,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from xgboost import XGBClassifier, XGBRegressor
-from sklearn.svm import SVR
-from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
@@ -310,40 +306,6 @@ plt.ylabel('Density')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.show()
 
-# **Machine Learning**
-# **Linear Regression**
-# **Marriage Duration Years**
-
-
-X = df.drop(['num_children', 'education_level', 'employment_status', 'combined_income','religious_compatibility', 'cultural_background_match', 'communication_score', 'conflict_frequency', 'mental_health_issues', 'infidelity_occurred',  'counseling_attended',  'social_support', 'shared_hobbies_count', 'marriage_type', 'pre_marital_cohabitation', 'domestic_violence_history', 'trust_score'], axis=1)
-Y = df['marriage_duration_years']
-
-X_train, x_test, Y_train, y_test = train_test_split(X,Y,test_size=0.2, random_state = 42)
-
-# One-hot encode the 'conflict_resolution_style' column
-X_train_encoded = pd.get_dummies(X_train, columns=['conflict_resolution_style'], drop_first=True)
-x_test_encoded = pd.get_dummies(x_test, columns=['conflict_resolution_style'], drop_first=True)
-
-Scaler = StandardScaler()
-X_train_scaled = Scaler.fit_transform(X_train_encoded)
-x_test_scaled = Scaler.transform(x_test_encoded)
-
-model = LinearRegression()
-model.fit(X_train_scaled, Y_train)
-y_pred = model.predict(x_test_scaled)
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
-print("\n=== Evaluation ===")
-print(f"Mean Squared Error: {mse:.4f}")
-print(f"R-squared: {r2:.4f}")
-
-plt.figure(figsize = (10,6))
-sns.regplot(x=y_test, y=y_pred, color = 'red')
-plt.title("Predicted Duration of Marriage")
-plt.grid(True)
-plt.show()
-
 # **Social Support**
 
 
@@ -459,9 +421,7 @@ X_train, x_test, Y_train, y_test = train_test_split(X,Y,test_size=0.2, random_st
 X_train_encoded = pd.get_dummies(X_train, columns=['conflict_resolution_style'], drop_first=True)
 x_test_encoded = pd.get_dummies(x_test, columns=['conflict_resolution_style'], drop_first=True)
 
-Scaler = StandardScaler()
-X_train_scaled = Scaler.fit_transform(X_train_encoded)
-x_test_scaled = Scaler.transform(x_test_encoded)
+
 
 xgb = XGBRegressor(
     n_estimators=300,
@@ -547,7 +507,7 @@ plt.grid(True)
 plt.show()
 
 
-# **Machine Learning using Random Forest**
+# **Machine Learning using XGB Boost**
 
 
 X = df.drop(['marriage_duration_years',  'num_children', 'education_level',      'employment_status',    'combined_income',      'religious_compatibility',      'cultural_background_match',    'communication_score',  'conflict_frequency',    'mental_health_issues', 'infidelity_occurred',  'counseling_attended',  'social_support',       'shared_hobbies_count', 'marriage_type',        'pre_marital_cohabitation',     'domestic_violence_history'], axis=1)
@@ -565,11 +525,20 @@ if categorical_cols:
 
 
 
-#Creating and training Random Forest model
-rf = RandomForestClassifier(n_estimators=100, random_state= 42)
-rf.fit(X_train, Y_train)
+xgb = XGBClassifier(
+    n_estimators = 100, 
+    random_state = 42,
+    learning_rate = 0.1,
+    max_depth = 5,
+    subsample = 0.8,
+    colsample_bytree = 0.8,
 
-y_pred = rf.predict(x_test)
+    
+
+)
+xgb.fit(X_train, Y_train)
+
+y_pred = xgb.predict(x_test)
 
 # Ensure the necessary variables exist (run the Logistic Regression training & prediction cells first)
 try:
@@ -579,8 +548,8 @@ except NameError as e:
     raise NameError("y_test or y_pred not found. Please (re)run the Logistic Regression cells before this cell.")
 
 # If model supports predict_proba, you may optionally threshold probabilities instead of using y_pred
-if hasattr(rf, 'predict_proba'):
-    y_prob = rf.predict_proba(x_test)[:, 1]
+if hasattr(y_pred, 'predict_proba'):
+    y_prob = y_pred.predict_proba(x_test)[:, 1]
     # Uncomment next line to use a 0.5 threshold from probabilities instead of existing y_pred:
     # y_pred_lr = (y_prob >= 0.5).astype(int)
 
@@ -632,11 +601,11 @@ if categorical_cols:
 
 
 
+#Create and train Random Forest model
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, Y_train)
 
-
-y_pred = rf.predict(x_test)
+pred = rf.predict(x_test)
 
 #Evaluate performance
 # Ensure the necessary variables exist (run the Logistic Regression training & prediction cells first)
@@ -647,8 +616,8 @@ except NameError as e:
     raise NameError("y_test or y_pred not found. Please (re)run the Logistic Regression cells before this cell.")
 
 # If model supports predict_proba, you may optionally threshold probabilities instead of using y_pred
-if hasattr(rf, 'predict_proba'):
-    y_prob = rf.predict_proba(x_test)[:, 1]
+if hasattr(pred, 'predict_proba'):
+    y_prob = pred.predict_proba(x_test)[:, 1]
     # Uncomment next line to use a 0.5 threshold from probabilities instead of existing y_pred:
     # y_pred_lr = (y_prob >= 0.5).astype(int)
 
@@ -690,7 +659,7 @@ if categorical_cols:
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, Y_train)
 
-y_pred = model.predict(x_test)
+rf = model.predict(x_test)
 
 #Evaluate performance
 # Ensure the necessary variables exist (run the Logistic Regression training & prediction cells first)
@@ -701,8 +670,8 @@ except NameError as e:
     raise NameError("y_test or y_pred not found. Please (re)run the Logistic Regression cells before this cell.")
 
 # If model supports predict_proba, you may optionally threshold probabilities instead of using y_pred
-if hasattr(model, 'predict_proba'):
-    y_prob = model.predict_proba(x_test)[:, 1]
+if hasattr(rf, 'predict_proba'):
+    y_prob = rf.predict_proba(x_test)[:, 1]
     # Uncomment next line to use a 0.5 threshold from probabilities instead of existing y_pred:
     # y_pred_lr = (y_prob >= 0.5).astype(int)
 
@@ -743,7 +712,7 @@ if categorical_cols:
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, Y_train)
 
-y_pred = model.predict(x_test)
+predictions = model.predict(x_test)
 
 #Evaluate performance
 # Ensure the necessary variables exist (run the Logistic Regression training & prediction cells first)
@@ -754,8 +723,8 @@ except NameError as e:
     raise NameError("y_test or y_pred not found. Please (re)run the Logistic Regression cells before this cell.")
 
 # If model supports predict_proba, you may optionally threshold probabilities instead of using y_pred
-if hasattr(model, 'predict_proba'):
-    y_prob = model.predict_proba(x_test)[:, 1]
+if hasattr(predictions, 'predict_proba'):
+    y_prob = predictions.predict_proba(x_test)[:, 1]
     # Uncomment next line to use a 0.5 threshold from probabilities instead of existing y_pred:
     # y_pred_lr = (y_prob >= 0.5).astype(int)
 
