@@ -15,8 +15,8 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier, XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report, accuracy_score, precision_score, recall_score, f1_score
+
 
 URL = 'https://github.com/Kabir26-star/CAS-ADS-Module-3/blob/main/divorce_df.csv?raw=true'
 df = pd.read_csv(URL)
